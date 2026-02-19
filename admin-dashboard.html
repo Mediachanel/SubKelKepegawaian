@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HijauRaya | Dashboard Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --brand: #0f9f6f;
+    --brand-2: #0a6f4e;
+    --bg: #f4fff7;
+    --border: #e4f1ea;
+  }
+  body {
+    background: linear-gradient(160deg, rgba(15,159,111,0.08), transparent 35%), var(--bg);
+    color: #0f1f16;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 16px 48px -28px rgba(0,0,0,0.25); }
+  .badge { background: rgba(15,159,111,0.1); color: var(--brand-2); border-radius: 999px; padding: 0.2rem 0.6rem; font-size: 0.75rem; }
+  .btn-primary { background: linear-gradient(120deg, var(--brand), #17c48a); color: #fff; padding: 0.65rem 1.2rem; border-radius: 12px; font-weight: 700; }
+  .btn-ghost { border: 1px solid var(--border); padding: 0.65rem 1rem; border-radius: 12px; font-weight: 600; color: var(--brand-2); }
+  .progress { height: 8px; border-radius: 999px; background: #edf3ef; overflow: hidden; }
+  .progress > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--brand), #17c48a); }
+</style>
+</head>
+<body class="antialiased">
+<header class="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-400 text-white font-bold flex items-center justify-center">HR</div>
+    <div>
+      <div class="text-lg font-semibold text-gray-900">HijauRaya Admin</div>
+      <div class="text-xs text-gray-500 uppercase tracking-[0.2em]">Control room</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <button class="btn-ghost">Export</button>
+    <button class="btn-primary">Tambah produk</button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 pb-14 space-y-7">
+  <section class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="card p-4 space-y-1">
+      <div class="text-xs text-gray-500">Pendapatan hari ini</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-revenue">Rp0</div>
+      <div class="text-xs text-gray-500">Target tercapai 74%</div>
+    </div>
+    <div class="card p-4 space-y-1">
+      <div class="text-xs text-gray-500">Pesanan baru</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-orders">0</div>
+      <div class="text-xs text-gray-500">24 jam terakhir</div>
+    </div>
+    <div class="card p-4 space-y-1">
+      <div class="text-xs text-gray-500">User baru</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-users">0</div>
+      <div class="text-xs text-gray-500">Registrasi valid</div>
+    </div>
+    <div class="card p-4 space-y-1">
+      <div class="text-xs text-gray-500">Pengembalian</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-returns">0</div>
+      <div class="text-xs text-gray-500">Butuh tindak lanjut</div>
+    </div>
+  </section>
+
+  <section class="card p-5 space-y-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div>
+        <div class="text-sm text-emerald-700 font-semibold">Tren harian</div>
+        <h2 class="text-xl font-bold text-gray-900">Penjualan dan user</h2>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <span class="badge">7 hari</span>
+        <span class="badge">Realtime</span>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card p-4 space-y-2 border border-emerald-50">
+        <div class="text-sm font-semibold text-gray-900">Omset (juta)</div>
+        <div class="progress"><span style="width:78%"></span></div>
+        <div class="text-xs text-gray-500">Hari ini vs kemarin</div>
+      </div>
+      <div class="card p-4 space-y-2 border border-emerald-50">
+        <div class="text-sm font-semibold text-gray-900">User aktif</div>
+        <div class="progress"><span style="width:64%"></span></div>
+        <div class="text-xs text-gray-500">Login dan checkout</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid lg:grid-cols-3 gap-4" id="orders">
+    <div class="card p-5 lg:col-span-2 space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <div class="text-sm text-emerald-700 font-semibold">Pesanan masuk</div>
+          <h2 class="text-xl font-bold text-gray-900">Butuh penanganan</h2>
+        </div>
+        <div class="flex gap-2">
+          <select id="admin-filter" class="px-3 py-2 rounded-lg border border-emerald-100 bg-white text-sm focus:ring-2 focus:ring-emerald-500">
+            <option value="all">Semua</option>
+            <option value="pending">Pending</option>
+            <option value="packed">Dikemas</option>
+            <option value="shipped">Dikirim</option>
+          </select>
+          <button class="btn-ghost" id="btn-refresh">Segarkan</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto border border-emerald-50 rounded-lg">
+        <table class="min-w-full text-sm">
+          <thead class="bg-emerald-50 text-emerald-800">
+            <tr class="text-left">
+              <th class="px-3 py-2">Invoice</th>
+              <th class="px-3 py-2">User</th>
+              <th class="px-3 py-2">Total</th>
+              <th class="px-3 py-2">Status</th>
+              <th class="px-3 py-2">Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="admin-order-body" class="divide-y divide-emerald-50"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card p-5 space-y-3">
+      <div class="text-sm text-emerald-700 font-semibold">Inventori kritis</div>
+      <h2 class="text-xl font-bold text-gray-900">Segera restock</h2>
+      <div id="stock-list" class="space-y-2"></div>
+      <button class="btn-primary w-full text-center">Buat PO</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const adminOrders = [
+  { id: 'INV-9012', user: 'Nadia', total: 'Rp259.000', status: 'pending' },
+  { id: 'INV-9011', user: 'Rama', total: 'Rp799.000', status: 'packed' },
+  { id: 'INV-9008', user: 'Sinta', total: 'Rp149.000', status: 'shipped' },
+  { id: 'INV-9006', user: 'Andi', total: 'Rp429.000', status: 'pending' }
+];
+
+const stocks = [
+  { name: 'Paket sayur 3 hari', qty: 14 },
+  { name: 'Lampu emergency', qty: 22 },
+  { name: 'Power bank 20k', qty: 9 },
+  { name: 'Filter air isi ulang', qty: 18 }
+];
+
+function renderAdminStats() {
+  document.getElementById('stat-revenue').textContent = 'Rp7.4 jt';
+  document.getElementById('stat-orders').textContent = adminOrders.length;
+  document.getElementById('stat-users').textContent = '128';
+  document.getElementById('stat-returns').textContent = '3';
+}
+
+function renderAdminOrders() {
+  const filter = document.getElementById('admin-filter').value;
+  const body = document.getElementById('admin-order-body');
+  body.innerHTML = '';
+  adminOrders
+    .filter(o => filter === 'all' || o.status === filter)
+    .forEach(o => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-emerald-50/60';
+      tr.innerHTML = `
+        <td class="px-3 py-2 font-semibold text-gray-900">${o.id}</td>
+        <td class="px-3 py-2 text-gray-700">${o.user}</td>
+        <td class="px-3 py-2 text-gray-900 font-semibold">${o.total}</td>
+        <td class="px-3 py-2"><span class="badge">${o.status}</span></td>
+        <td class="px-3 py-2"><button class="btn-ghost text-xs">Proses</button></td>`;
+      body.appendChild(tr);
+    });
+}
+
+function renderStock() {
+  const wrap = document.getElementById('stock-list');
+  wrap.innerHTML = '';
+  stocks.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between text-sm border border-emerald-50 rounded-lg px-3 py-2';
+    row.innerHTML = `
+      <div>
+        <div class="font-semibold text-gray-900">${item.name}</div>
+        <div class="text-xs text-gray-500">Sisa ${item.qty} unit</div>
+      </div>
+      <button class="btn-ghost text-xs">Restock</button>`;
+    wrap.appendChild(row);
+  });
+}
+
+renderAdminStats();
+renderAdminOrders();
+renderStock();
+document.getElementById('admin-filter').addEventListener('change', renderAdminOrders);
+document.getElementById('btn-refresh').addEventListener('click', renderAdminOrders);
+</script>
+</body>
+</html>

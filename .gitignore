@@ -1,0 +1,10 @@
+node_modules/
+**/node_modules/
+.env
+**/.env
+*.log
+**/*.log
+*.log.locked
+**/*.log.locked
+service-account-key.json
+sikepeg-backend/service-account-key.json

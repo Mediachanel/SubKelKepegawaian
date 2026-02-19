@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Profil Pegawai</title>
+
+<style>
+  :root {
+    --bg:#f8f9fa;
+    --card-bg:#fff;
+    --border:#d1d5db;
+    --text:#1f2937;
+    --muted:#6b7280;
+  }
+
+  body {
+    font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 24px 48px rgba(0,0,0,.06);
+    padding: 16px 20px 24px;
+  }
+
+  /* header */
+  .header-top {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:16px;
+  }
+  .header-left h1 {
+    font-size:1rem;
+    font-weight:600;
+    margin:0 0 6px 0;
+    color:#111827;
+  }
+  .subinfo {
+    font-size:.8rem;
+    color:var(--muted);
+    line-height:1.4;
+  }
+  .header-right {
+    text-align:right;
+    font-size:.7rem;
+    color:var(--muted);
+    line-height:1.4;
+  }
+  .divider {
+    border-top:1px solid var(--border);
+    margin:8px 0 16px 0;
+  }
+
+  /* section card */
+  .section-card {
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:#fff;
+    margin-bottom:16px;
+  }
+  .section-head {
+    background:#f3f4f6;
+    border-bottom:1px solid var(--border);
+    border-radius:6px 6px 0 0;
+    padding:8px 12px;
+    font-size:.8rem;
+    font-weight:600;
+    color:#111827;
+  }
+  .section-body {
+    padding:12px;
+    font-size:.8rem;
+    line-height:1.5;
+  }
+
+  /* grid 2-col detail */
+  .detail-grid {
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  @media(min-width:700px){
+    .detail-grid {
+      grid-template-columns:1fr 1fr;
+    }
+  }
+
+  .field-block {
+    font-size:.8rem;
+  }
+  .field-label {
+    font-size:.7rem;
+    color:var(--muted);
+    margin-bottom:2px;
+  }
+  .field-value {
+    font-weight:500;
+    color:#111827;
+    word-break:break-word;
+    font-size:.8rem;
+  }
+
+  /* grid 1-col (alamat) */
+  .detail-grid-1 {
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+
+  .footer-row {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px;
+    margin-top:24px;
+  }
+
+  /* tombol dasar */
+  .btn-link {
+    background:#4b5563; /* abu gelap */
+    color:#fff;
+    text-decoration:none;
+    font-size:.75rem;
+    padding:8px 12px;
+    border-radius:6px;
+    line-height:1.2;
+    font-weight:500;
+    border:0;
+    cursor:pointer;
+    display:inline-block;
+  }
+
+  /* tombol print (hitam) */
+  .btn-print {
+    background:#1f2937;
+  }
+
+  /* tombol edit (hijau dinkes) */
+  .btn-edit {
+    background:#059669; /* emerald-600 */
+  }
+  .btn-edit:hover {
+    background:#047857; /* emerald-700 */
+  }
+
+  .note {
+    width:100%;
+    font-size:.7rem;
+    color:var(--muted);
+    line-height:1.4;
+    text-align:center;
+    margin-top:8px;
+  }
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .page {
+      box-shadow:none;
+      border:0;
+      border-radius:0;
+      max-width:100%;
+      width:100%;
+      padding:0 16px 16px;
+    }
+    .footer-row { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- HEADER -->
+  <div class="header-top">
+    <div class="header-left">
+      <h1 id="nama-title">Profil Pegawai</h1>
+      <div class="subinfo">
+        ID: <span id="profil-id">-</span><br/>
+        NIP/NRK: <span id="profil-nip">-</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div>Update terakhir:</div>
+      <div id="profil-update">-</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- INFORMASI KEPEGAWAIAN -->
+  <div class="section-card">
+    <div class="section-head">Informasi Kepegawaian</div>
+    <div class="section-body">
+      <div class="detail-grid">
+        <div class="field-block">
+          <div class="field-label">Nama Lengkap</div>
+          <div class="field-value" id="profil-nama">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Jabatan</div>
+          <div class="field-value" id="profil-jabatan">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">UKPD</div>
+          <div class="field-value" id="profil-ukpd">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Status Aktif</div>
+          <div class="field-value" id="profil-status-aktif">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Status Rumpun</div>
+          <div class="field-value" id="profil-status-rumpun">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Jenis Kontrak</div>
+          <div class="field-value" id="profil-jenis-kontrak">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Jenis Pegawai</div>
+          <div class="field-value" id="profil-jenis-pegawai">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">TMT Kerja UKPD</div>
+          <div class="field-value" id="profil-tmt-ukpd">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDENTITAS PRIBADI -->
+  <div class="section-card">
+    <div class="section-head">Identitas Pribadi</div>
+    <div class="section-body">
+      <div class="detail-grid">
+        <div class="field-block">
+          <div class="field-label">NIK</div>
+          <div class="field-value" id="profil-nik">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Jenis Kelamin</div>
+          <div class="field-value" id="profil-jk">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Tempat Lahir</div>
+          <div class="field-value" id="profil-tempat-lahir">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Tanggal Lahir</div>
+          <div class="field-value" id="profil-tanggal-lahir">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Agama</div>
+          <div class="field-value" id="profil-agama">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Status Pernikahan</div>
+          <div class="field-value" id="profil-status-nikah">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Gelar Depan</div>
+          <div class="field-value" id="profil-gelar-depan">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Gelar Belakang</div>
+          <div class="field-value" id="profil-gelar-belakang">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Golongan Darah</div>
+          <div class="field-value" id="profil-gol-darah">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENDIDIKAN & KONTAK -->
+  <div class="section-card">
+    <div class="section-head">Pendidikan & Kontak</div>
+    <div class="section-body">
+      <div class="detail-grid">
+        <div class="field-block">
+          <div class="field-label">Jenjang Pendidikan</div>
+          <div class="field-value" id="profil-jenjang-pddk">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Jurusan Pendidikan</div>
+          <div class="field-value" id="profil-jurusan">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">No. Telepon</div>
+          <div class="field-value" id="profil-telp">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Email</div>
+          <div class="field-value" id="profil-email">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALAMAT -->
+  <div class="section-card">
+    <div class="section-head">Alamat</div>
+    <div class="section-body">
+      <div class="detail-grid-1">
+        <div class="field-block">
+          <div class="field-label">Alamat KTP</div>
+          <div class="field-value" id="profil-alamat-ktp">-</div>
+        </div>
+
+        <div class="field-block">
+          <div class="field-label">Alamat Domisili</div>
+          <div class="field-value" id="profil-alamat-domisili">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATATAN -->
+  <div class="section-card">
+    <div class="section-head">Catatan Administrasi</div>
+    <div class="section-body">
+      <div class="detail-grid-1">
+        <div class="field-block">
+          <div class="field-label">Catatan Revisi Biodata / Keterangan Lain</div>
+          <div class="field-value" id="profil-catatan">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER / ACTION -->
+  <div class="footer-row">
+    <a class="btn-link" href="index.html">← Kembali ke Daftar</a>
+
+    <button class="btn-link btn-edit" id="btnEditProfil">
+      ✏️ Edit Profil
+    </button>
+
+    <button class="btn-link btn-print" onclick="window.print()">
+      🖨 Cetak / PDF
+    </button>
+
+    <div class="note">
+      Dokumen ini dihasilkan otomatis dari data kepegawaian. Harap verifikasi jika digunakan
+      untuk keperluan administrasi resmi.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_BASE = 'http://localhost:3000';
+
+// global var supaya tombol Edit Profil bisa pakai
+let currentId = null;
+
+// ambil ?id=2 dari URL
+function getQueryParam(name){
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+function setText(id, value){
+  document.getElementById(id).textContent = value && value !== '' ? value : '-';
+}
+
+function renderProfil(p){
+  // simpan ID global (penting utk tombol edit)
+  currentId = p.id || null;
+
+  // Header
+  document.getElementById('nama-title').textContent = p.nama || 'Profil Pegawai';
+  setText('profil-id', p.id);
+  // tampilkan nip atau npwp sebagai pengganti NRK
+  setText('profil-nip', p.nip || p.npwp || '-');
+  setText('profil-update', p.tgl_update);
+
+  // Informasi kepegawaian
+  setText('profil-nama', p.nama);
+  setText('profil-jabatan', p.jabatan);
+  setText('profil-ukpd', p.ukpd);
+  setText('profil-status-aktif', p.nama_status_aktif);
+  setText('profil-status-rumpun', p.nama_status_rumpun);
+  setText('profil-jenis-kontrak', p.jenis_kontrak);
+  setText('profil-jenis-pegawai', p.nama_jenis_pegawai);
+  setText('profil-tmt-ukpd', p.tmt_kerja_ukpd);
+
+  // Identitas pribadi
+  setText('profil-nik', p.nik);
+  setText('profil-jk', p.jenis_kelamin);
+  setText('profil-tempat-lahir', p.tempat_lahir);
+  setText('profil-tanggal-lahir', p.tanggal_lahir);
+  setText('profil-agama', p.agama);
+  setText('profil-status-nikah', p.status_pernikahan);
+  setText('profil-gelar-depan', p.gelar_depan);
+  setText('profil-gelar-belakang', p.gelar_belakang);
+  setText('profil-gol-darah', p.golongan_darah);
+
+  // Pendidikan & Kontak
+  setText('profil-jenjang-pddk', p.jenjang_pendidikan);
+  setText('profil-jurusan', p.jurusan_pendidikan);
+  setText('profil-telp', p.no_tlp);
+  setText('profil-email', p.email);
+
+  // Alamat
+  setText('profil-alamat-ktp', p.alamat_ktp);
+  setText('profil-alamat-domisili', p.alamat_domisili);
+
+  // Catatan
+  setText('profil-catatan', p.catatan_revisi_biodata);
+}
+
+async function loadProfil(){
+  const id = getQueryParam('id');
+  if(!id){
+    alert('URL harus ada ?id=... Contoh: profil.html?id=2');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/pegawai/${id}`);
+    const json = await res.json();
+
+    if(!json.success){
+      alert(`Pegawai ID ${id} tidak ditemukan`);
+      return;
+    }
+
+    renderProfil(json.data);
+  } catch(err){
+    console.error('Gagal ambil profil:', err);
+    alert('Gagal ambil profil: ' + err);
+  }
+}
+
+// pasang event tombol edit SESUDAH data diload
+document.addEventListener('DOMContentLoaded', () => {
+  // load data profil
+  loadProfil().then(() => {
+    // aktifkan tombol edit setelah kita tahu currentId
+    const btnEdit = document.getElementById('btnEditProfil');
+    btnEdit.addEventListener('click', () => {
+      if (!currentId) {
+        alert('ID pegawai tidak ditemukan, tidak bisa edit.');
+        return;
+      }
+      window.location.href = 'edit_profil.html?id=' + encodeURIComponent(currentId);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

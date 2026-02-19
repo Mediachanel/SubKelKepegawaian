@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HijauRaya | Dashboard Pengguna</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --brand: #0f9f6f;
+    --brand-2: #0a6f4e;
+    --bg: #f6fff8;
+    --card: #ffffff;
+    --border: #e5f3ec;
+  }
+  body {
+    background: radial-gradient(circle at 10% 10%, rgba(15,159,111,0.1), transparent 30%),
+                radial-gradient(circle at 80% 0%, rgba(10,111,78,0.08), transparent 25%),
+                var(--bg);
+    color: #0f1f16;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px -28px rgba(0,0,0,0.25);
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 24px 60px -32px rgba(15,159,111,0.35); }
+  .badge { background: rgba(15,159,111,0.08); color: var(--brand-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.65rem; font-size: 0.75rem; }
+  .pill { border-radius: 999px; padding: 0.4rem 0.9rem; background: rgba(15,159,111,0.12); color: var(--brand-2); font-weight: 600; font-size: 0.85rem; }
+  .btn-primary { background: linear-gradient(120deg, var(--brand), #17c48a); color: #fff; padding: 0.75rem 1.4rem; border-radius: 12px; font-weight: 700; box-shadow: 0 16px 32px -16px rgba(15,159,111,0.6); }
+  .btn-ghost { border: 1px solid var(--border); padding: 0.7rem 1.2rem; border-radius: 12px; font-weight: 600; color: var(--brand-2); background: #ffffffaa; }
+  .progress { height: 8px; border-radius: 999px; background: #ecf3f0; overflow: hidden; }
+  .progress > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--brand), #17c48a); }
+</style>
+</head>
+<body class="antialiased">
+<header class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-400 text-white font-bold flex items-center justify-center">HR</div>
+    <div>
+      <div class="text-lg font-semibold text-gray-900">HijauRaya</div>
+      <div class="text-xs text-gray-500 uppercase tracking-[0.2em]">Dashboard pengguna</div>
+    </div>
+  </div>
+  <nav class="hidden md:flex items-center gap-5 text-sm text-gray-700">
+    <a href="#" class="hover:text-emerald-700 font-semibold">Dashboard</a>
+    <a href="#orders" class="hover:text-emerald-700">Pesanan</a>
+    <a href="#rekom" class="hover:text-emerald-700">Rekomendasi</a>
+  </nav>
+  <div class="flex items-center gap-3">
+    <button class="btn-ghost">Bantuan</button>
+    <button class="btn-primary">Top Up</button>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 pb-14 space-y-8">
+  <section class="card p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div class="space-y-2">
+      <div class="pill w-max">Status akun aktif</div>
+      <h1 class="text-3xl font-bold text-gray-900">Halo, Nadia</h1>
+      <p class="text-sm text-gray-600 max-w-xl">Pantau pesanan, saldo, dan rekomendasi produk. Semua serba hijau dan cepat.</p>
+      <div class="flex flex-wrap gap-2 text-xs text-gray-600">
+        <span class="badge">Pengiriman cepat</span>
+        <span class="badge">Garansi tukar</span>
+        <span class="badge">Voucher hijau</span>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <button class="btn-primary">Buat pesanan</button>
+      <button class="btn-ghost">Lacak paket</button>
+    </div>
+  </section>
+
+  <section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="card p-4">
+      <div class="text-sm text-gray-500">Total pesanan</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-total">0</div>
+      <div class="text-xs text-gray-500">Semua waktu</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-sm text-gray-500">Sedang dikirim</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-transit">0</div>
+      <div class="text-xs text-gray-500">Kurir aktif</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-sm text-gray-500">Voucher siap pakai</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-voucher">0</div>
+      <div class="text-xs text-gray-500">Klaim sebelum habis</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-sm text-gray-500">Saldo dompet</div>
+      <div class="text-2xl font-bold text-emerald-800" id="stat-wallet">Rp0</div>
+      <div class="text-xs text-gray-500">Tarik atau bayar instan</div>
+    </div>
+  </section>
+
+  <section class="card p-5 space-y-3" id="orders">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>
+        <div class="text-sm text-emerald-700 font-semibold">Pesanan aktif</div>
+        <h2 class="text-xl font-bold text-gray-900">Lacak status terbaru</h2>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center">
+        <input id="search" class="w-48 px-3 py-2 rounded-lg border border-emerald-100 bg-white text-sm focus:ring-2 focus:ring-emerald-500" placeholder="Cari nomor / nama" />
+        <select id="filter" class="px-3 py-2 rounded-lg border border-emerald-100 bg-white text-sm focus:ring-2 focus:ring-emerald-500">
+          <option value="all">Semua status</option>
+          <option value="dikemas">Dikemas</option>
+          <option value="dikirim">Dikirim</option>
+          <option value="selesai">Selesai</option>
+        </select>
+      </div>
+    </div>
+    <div id="order-list" class="grid md:grid-cols-2 gap-3"></div>
+  </section>
+
+  <section class="grid lg:grid-cols-3 gap-4" id="rekom">
+    <div class="card p-5 lg:col-span-2 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm text-emerald-700 font-semibold">Rekomendasi hijau</div>
+          <h2 class="text-xl font-bold text-gray-900">Untuk kebutuhan rutinmu</h2>
+        </div>
+        <a class="text-sm text-emerald-700 font-semibold" href="#">Lihat semua</a>
+      </div>
+      <div id="rec-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </div>
+    <div class="card p-5 space-y-3">
+      <div class="text-sm text-emerald-700 font-semibold">Aktivitas dompet</div>
+      <h2 class="text-xl font-bold text-gray-900">Saldo dan cashback</h2>
+      <div class="space-y-3" id="wallet-list"></div>
+      <button class="btn-primary w-full text-center">Tarik saldo</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const orders = [
+  { id: "INV-8821", title: "Paket Fresh Market", status: "dikirim", progress: 70, eta: "Tiba hari ini" },
+  { id: "INV-8742", title: "Kit Darurat Rumah", status: "dikemas", progress: 30, eta: "Siap diambil kurir" },
+  { id: "INV-8702", title: "Smart Bulb 3 Pack", status: "selesai", progress: 100, eta: "Selesai" },
+  { id: "INV-8680", title: "Vitamin Keluarga", status: "dikirim", progress: 55, eta: "Menuju hub kota" }
+];
+
+const recs = [
+  { name: "Filter air isi ulang", price: "Rp79.000", tag: "Rumah" },
+  { name: "Paket sayur 3 hari", price: "Rp99.000", tag: "Groceries" },
+  { name: "Lampu emergency", price: "Rp149.000", tag: "Darurat" },
+  { name: "Toner tea tree", price: "Rp69.000", tag: "Perawatan" },
+  { name: "Kopi biji 500g", price: "Rp89.000", tag: "Kopi" },
+  { name: "Power bank 20k mAh", price: "Rp299.000", tag: "Teknologi" }
+];
+
+const walletActivity = [
+  { title: "Cashback Flash Sale", amount: "+Rp15.000", time: "Baru saja" },
+  { title: "Top up dompet", amount: "+Rp200.000", time: "Kemarin" },
+  { title: "Pembayaran INV-8702", amount: "-Rp249.000", time: "3 hari lalu" }
+];
+
+function renderStats() {
+  document.getElementById('stat-total').textContent = orders.length;
+  document.getElementById('stat-transit').textContent = orders.filter(o => o.status === 'dikirim').length;
+  document.getElementById('stat-voucher').textContent = 3;
+  document.getElementById('stat-wallet').textContent = 'Rp425.000';
+}
+
+function renderOrders() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const filter = document.getElementById('filter').value;
+  const wrap = document.getElementById('order-list');
+  wrap.innerHTML = '';
+  orders
+    .filter(o => (filter === 'all' || o.status === filter))
+    .filter(o => o.id.toLowerCase().includes(search) || o.title.toLowerCase().includes(search))
+    .forEach(o => {
+      const div = document.createElement('div');
+      div.className = 'card p-4 space-y-2';
+      div.innerHTML = `
+        <div class="flex items-center justify-between text-sm">
+          <span class="font-semibold text-gray-900">${o.title}</span>
+          <span class="badge">${o.status}</span>
+        </div>
+        <div class="text-xs text-gray-500">${o.id} • ${o.eta}</div>
+        <div class="progress"><span style="width:${o.progress}%"></span></div>
+        <div class="flex items-center justify-between text-xs text-gray-500">
+          <span>Progres</span>
+          <span>${o.progress}%</span>
+        </div>`;
+      wrap.appendChild(div);
+    });
+}
+
+function renderRecs() {
+  const wrap = document.getElementById('rec-list');
+  wrap.innerHTML = '';
+  recs.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'card p-3 space-y-1';
+    div.innerHTML = `
+      <div class="text-sm font-semibold text-gray-900">${item.name}</div>
+      <div class="text-xs text-gray-500">${item.tag}</div>
+      <div class="text-base font-bold text-emerald-800">${item.price}</div>
+      <button class="btn-ghost text-sm w-full">Tambah</button>`;
+    wrap.appendChild(div);
+  });
+}
+
+function renderWallet() {
+  const wrap = document.getElementById('wallet-list');
+  wrap.innerHTML = '';
+  walletActivity.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between text-sm border border-emerald-50 rounded-lg px-3 py-2';
+    row.innerHTML = `
+      <div>
+        <div class="font-semibold text-gray-900">${item.title}</div>
+        <div class="text-xs text-gray-500">${item.time}</div>
+      </div>
+      <div class="font-semibold text-emerald-700">${item.amount}</div>`;
+    wrap.appendChild(row);
+  });
+}
+
+renderStats();
+renderOrders();
+renderRecs();
+renderWallet();
+document.getElementById('search').addEventListener('input', renderOrders);
+document.getElementById('filter').addEventListener('change', renderOrders);
+</script>
+</body>
+</html>

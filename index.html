@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>SI Data Pegawai - Masuk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="foto/Dinkes.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f6f7;
+      --panel: #ffffff;
+      --deep: #1f2466;
+      --accent: #ff8c3a;
+      --accent-soft: #e6fbf7;
+      --accent-2: #12b7a6;
+      --accent-3: #ffd6b6;
+      --muted: #5b6380;
+      --shadow: 0 26px 46px rgba(39, 45, 96, 0.22);
+      --border: #e4ebee;
+      --font-body: "Manrope","Segoe UI", Arial, sans-serif;
+      --font-display: "Space Grotesk","Trebuchet MS", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background:
+        radial-gradient(circle at 10% 18%, rgba(18,183,166,0.2), transparent 34%),
+        radial-gradient(circle at 86% 8%, rgba(255,140,58,0.2), transparent 38%),
+        repeating-linear-gradient(135deg, rgba(31,36,102,0.05) 0 1px, transparent 1px 14px),
+        var(--bg);
+      color: #1f2a2e;
+    }
+    main { padding: 24px 18px 36px; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; background: linear-gradient(120deg, rgba(18,183,166,0.2), rgba(255,140,58,0.18)), #ffffff; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50; box-shadow: 0 10px 28px rgba(39,45,96,0.14); backdrop-filter: blur(8px);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 38px; height: 38px; object-fit: contain; }
+    .brand .title { font-weight: 800; font-size: 15px; color: #1a2154; line-height: 1.2; font-family: var(--font-display); }
+    .pill { display: inline-flex; align-items: center; gap: 8px; background: #e9fbf8; color: #1f2a2e; padding: 8px 12px; border-radius: 999px; font-size: 12px; box-shadow: 0 10px 20px rgba(18,183,166,0.24); }
+    .pill .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,140,58,0.2); }
+    .hero {
+      max-width: 1100px; margin: 0 auto;
+      background: linear-gradient(135deg, rgba(18,183,166,0.24), rgba(255,140,58,0.18)), #0f9d94;
+      border-radius: 26px; padding: 30px; box-shadow: var(--shadow);
+      color: #eff7f5; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px; position: relative; overflow: hidden;
+      animation: floatIn 0.8s ease both;
+    }
+    .bubble { position: absolute; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.14); right: 26px; top: 20px; }
+    .bubble.small { width: 90px; height: 90px; right: 60px; bottom: 18px; background: rgba(255,255,255,0.1); }
+    h1 { margin: 6px 0 10px; font-size: 32px; line-height: 1.15; font-family: var(--font-display); letter-spacing: 0.2px; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(255,255,255,0.2); border-radius: 999px; font-size: 12px; font-weight: 700; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.25); }
+    p { margin: 0; color: #e0e6ff; line-height: 1.55; }
+    .cta { margin-top: 16px; display: inline-block; background: linear-gradient(135deg, #ff8c3a, #ffd6b6); color: #102037; padding: 12px 18px; border-radius: 999px; font-weight: 800; text-decoration: none; box-shadow: 0 12px 24px rgba(18,183,166,0.35); }
+
+    .login-card { background: var(--panel); color: #1f2a2e; border-radius: 18px; padding: 22px 20px; box-shadow: 0 16px 34px rgba(39,45,96,0.16); border: 1px solid var(--border); animation: floatIn 0.9s ease both; }
+    .login-card h3 { margin: 0 0 14px; font-size: 18px; color: #1f2a2e; font-family: var(--font-display); }
+    label { display: block; font-size: 12px; font-weight: 700; color: #4f5876; margin-bottom: 6px; }
+    input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #d5ddf6; font-size: 14px; background: #f7f9ff; }
+    input:focus { outline: 2px solid rgba(18,183,166,0.25); border-color: #7adbcf; }
+    .input-wrap { position: relative; }
+    .input-wrap input { padding-right: 40px; }
+    .toggle-visibility {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      width: 30px; height: 30px; border: none; background: transparent; display: grid; place-items: center;
+      color: #6b7ab0; cursor: pointer;
+    }
+    .toggle-visibility:hover { color: #1a2154; }
+    .toggle-visibility:focus-visible { outline: 2px solid rgba(18,183,166,0.45); outline-offset: 2px; border-radius: 999px; }
+    .toggle-visibility svg { width: 18px; height: 18px; display: block; fill: currentColor; }
+    .btn { margin-top: 12px; width: 100%; padding: 12px 14px; border: none; border-radius: 12px; background: linear-gradient(120deg, #12b7a6 0%, #a6f0e6 55%, #ffd6b6 100%); color: #0f2140; font-weight: 800; cursor: pointer; box-shadow: 0 16px 30px rgba(18,183,166,0.3); font-size: 14px; }
+    .btn:disabled { background: #bfe9e2; cursor: not-allowed; }
+    .status { margin-top: 10px; padding: 10px; border-radius: 12px; background: #e9fbf8; border: 1px solid #e4ebee; color: #0f7f73; font-weight: 700; font-size: 13px; }
+    .status.success { background: #dcf9f2; border-color: #b4eddc; color: #0f6f5e; }
+    .status.error { background: #fde2eb; border-color: #f6c2d2; color: #9c2447; }
+    .status.warn { background: #fff1cd; border-color: #ffe09a; color: #8a5b10; }
+    .muted { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    .faq-section { max-width: 1100px; margin: 26px auto 0; display: grid; gap: 16px; }
+    .faq-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.96), #f3f6f7);
+      border: 1px solid rgba(223,228,245,0.9);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: floatIn 0.9s ease both;
+    }
+    .faq-card::before{
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -80px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(18,183,166,0.22);
+    }
+    .faq-card::after{
+      content: "";
+      position: absolute;
+      left: -70px;
+      bottom: -90px;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: rgba(255,140,58,0.18);
+    }
+    .faq-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 18px; position: relative; z-index: 1; }
+    .faq-hero-text { display: grid; gap: 10px; }
+    .faq-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e9fbf8;
+      color: #0f7f73;
+      font-size: 12px;
+      font-weight: 800;
+      width: fit-content;
+      box-shadow: 0 10px 20px rgba(18,183,166,0.24);
+    }
+    .faq-title { margin: 0; font-size: 24px; letter-spacing: 0.2px; font-family: var(--font-display); color: #1a2154; }
+    .faq-sub { margin: 0; color: #5a6487; font-size: 13px; line-height: 1.65; }
+    .faq-search-wrap {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 26px rgba(39,45,96,0.1);
+    }
+    .faq-search-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: #e9fbf8;
+      display: grid;
+      place-items: center;
+      color: #0f7f73;
+      flex-shrink: 0;
+    }
+    .faq-search-icon svg { width: 18px; height: 18px; fill: currentColor; }
+    .faq-search {
+      border: none;
+      background: transparent;
+      padding: 8px 6px;
+      font-size: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+    .faq-search:focus { outline: none; }
+    .faq-count {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #e4ebee;
+      background: #e9fbf8;
+      font-weight: 800;
+      font-size: 12px;
+      color: #0f7f73;
+      white-space: nowrap;
+    }
+    .faq-hero-panel {
+      background: linear-gradient(160deg, rgba(18,183,166,0.2), rgba(255,140,58,0.12)), #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      box-shadow: 0 16px 30px rgba(39,45,96,0.12);
+    }
+    .faq-panel-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .faq-panel-label { font-size: 12px; color: #5b6380; font-weight: 700; }
+    .faq-panel-value { font-size: 22px; font-weight: 800; color: #1a2154; }
+    .faq-panel-note{
+      font-size: 12px;
+      color: #4f5a78;
+      background: rgba(255,255,255,0.7);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px dashed rgba(255,255,255,0.8);
+    }
+    .faq-tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 6px 2px;
+      overflow-x: auto;
+      position: relative;
+      z-index: 1;
+    }
+    .faq-tags::-webkit-scrollbar { height: 6px; }
+    .faq-tags::-webkit-scrollbar-thumb { background: #cbd3f6; border-radius: 999px; }
+    .faq-tag {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #e9fbf8;
+      border: 1px solid #e4ebee;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      color: #3a4797;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      white-space: nowrap;
+    }
+    .faq-tag:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px rgba(18,183,166,0.22); }
+    .faq-tag.active { background: #e6fbf7; color: #0f6f5e; border-color: #b4eddc; box-shadow: 0 10px 18px rgba(255,140,58,0.2); }
+    .faq-body { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); margin-top: 14px; position: relative; z-index: 1; }
+    .faq-list { display: grid; gap: 12px; }
+    .faq-item{
+      width: 100%;
+      border: 1px solid rgba(223,228,245,0.9);
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: #ffffff;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) 16px;
+      gap: 12px;
+      align-items: start;
+      position: relative;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+    .faq-item::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:12px;
+      bottom:12px;
+      width:4px;
+      border-radius:999px;
+      background: linear-gradient(180deg, rgba(18,183,166,0.9), rgba(255,140,58,0.9));
+      opacity:0;
+      transition: opacity 0.15s ease;
+    }
+    .faq-item:hover{ transform: translateY(-1px); box-shadow: 0 14px 24px rgba(39,45,96,0.14); border-color: #cfd6f4; }
+    .faq-item.active{ background: linear-gradient(135deg, #e9fbf8, #ffffff); border-color: #cfd6f4; box-shadow: 0 16px 30px rgba(18,183,166,0.24); }
+    .faq-item.active::before{ opacity:1; }
+    .faq-item:focus-visible{ outline: 2px solid #99a8ff; outline-offset: 2px; }
+    .faq-item-index{
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: #e9fbf8;
+      color: #0f7f73;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      box-shadow: inset 0 0 0 1px #e4ebee;
+    }
+    .faq-item-body { display: grid; gap: 6px; }
+    .faq-item-head{ display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .faq-chip{ display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: #e6fbf7; color: #0f6f5e; font-size: 11px; font-weight: 700; }
+    .faq-item-meta { font-size: 11px; color: #8a94b8; font-weight: 700; }
+    .faq-item-title{ margin: 0; font-weight: 800; font-size: 14px; color: #182257; }
+    .faq-item-preview{ color: #5f6a88; font-size: 12px; line-height: 1.5; margin: 0; }
+    .faq-item-arrow{
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid #9aa3c6;
+      border-bottom: 2px solid #9aa3c6;
+      transform: rotate(-45deg);
+      margin-top: 10px;
+      justify-self: end;
+    }
+    .faq-detail{
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.96), #e9fbf8);
+      box-shadow: 0 14px 26px rgba(39,45,96,0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 260px;
+      position: sticky;
+      top: 110px;
+    }
+    .faq-detail-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .faq-detail-title{ font-size: 19px; margin: 0; color: #1a2154; font-family: var(--font-display); }
+    .faq-detail-answer{ color: #47527a; line-height: 1.65; white-space: pre-wrap; }
+    .faq-detail-meta{
+      font-size: 12px;
+      color: #0f7f73;
+      background: #e9fbf8;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-weight: 700;
+    }
+    .faq-empty{ text-align: center; color: var(--muted); padding: 16px; border: 1px dashed var(--border); border-radius: 12px; background: #ffffff; }
+    .faq-status { margin-top: 12px; font-size: 12px; color: var(--muted); position: relative; z-index: 1; }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer { text-align: center; padding: 20px; color: #6c7496; font-size: 12px; }
+    @media (max-width: 700px) {
+      h1 { font-size: 24px; }
+      .hero { padding: 22px; }
+    }
+    @media (max-width: 900px) {
+      .faq-hero { grid-template-columns: 1fr; }
+      .faq-body { grid-template-columns: 1fr; }
+      .faq-detail { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="foto/Dinkes.png" alt="Logo Dinkes" />
+      <div class="title">Subkelompok Kepegawaian<br/><span style="font-weight:600;color:#4a5c55;">Dinas Kesehatan</span></div>
+    </div>
+    <div class="pill"><span class="dot"></span><span id="clock">Memuat...</span></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <div class="tag">Informasi Kepegawaian</div>
+        <h1>Layanan Kepegawaian Dinas Kesehatan Provinsi DKI Jakarta</h1>
+        <p>Akses informasi perencanaan dan pendayagunaan pegawai, kesejahteraan pegawai, pengembangan karir, serta disiplin pegawai terintegrasi.</p>
+        <a class="cta" href="#" aria-disabled="true">Baca Selengkapnya</a>
+      </div>
+      <div class="login-card">
+        <h3>Masuk Sistem Informasi Data Pegawai</h3>
+        <form id="loginForm">
+          <div>
+            <label>Username / UKPD ID</label>
+            <input name="username" placeholder="Username" required />
+          </div>
+          <div style="margin-top:10px;">
+            <label>Password</label>
+            <div class="input-wrap">
+              <input name="password" type="password" placeholder="Password" id="loginPassword" required />
+              <button type="button" class="toggle-visibility" data-target="loginPassword" aria-label="Tampilkan password">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 5c5 0 9.27 3.11 11 7-1.73 3.89-6 7-11 7S2.73 15.89 1 12c1.73-3.89 6-7 11-7Zm0 2c-3.76 0-7.09 2.2-8.74 5 1.65 2.8 4.98 5 8.74 5s7.09-2.2 8.74-5C19.09 9.2 15.76 7 12 7Zm0 2.5A2.5 2.5 0 1 1 9.5 12 2.5 2.5 0 0 1 12 9.5Z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn" id="loginBtn" disabled>Masuk</button>
+        </form>
+        <div class="muted">Lupa password? Hubungi admin Kepegawaian</div>
+        <div id="status" class="status">Status: menunggu koneksi server...</div>
+      </div>
+      <div class="bubble"></div>
+      <div class="bubble small"></div>
+    </section>
+
+    <section class="faq-section">
+      <div class="faq-card">
+        <div class="faq-hero">
+          <div class="faq-hero-text">
+            <div class="faq-kicker">QnA Layanan</div>
+            <h3 class="faq-title">Pusat jawaban cepat kepegawaian</h3>
+            <p class="faq-sub">Temukan aturan, syarat, dan alur kerja mutasi atau pemutusan JF dengan cepat, tanpa perlu scroll panjang.</p>
+            <div class="faq-search-wrap">
+              <span class="faq-search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M10 2a8 8 0 0 1 6.32 12.9l4.4 4.4-1.4 1.4-4.4-4.4A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"></path>
+                </svg>
+              </span>
+              <input id="faqSearch" class="faq-search" placeholder="Cari pertanyaan..." />
+              <div class="faq-count" id="faqCount">0 pertanyaan</div>
+            </div>
+          </div>
+          <div class="faq-hero-panel">
+            <div class="faq-panel-row">
+              <span class="faq-panel-label">Total FAQ</span>
+              <span class="faq-panel-value" id="faqCountBadge">0</span>
+            </div>
+            <div class="faq-panel-row">
+              <span class="faq-panel-label">Status Data</span>
+              <span class="faq-panel-value" id="faqStatusBadge">-</span>
+            </div>
+            <div class="faq-panel-note">Gunakan pencarian untuk menyaring jawaban instan berbasis kategori.</div>
+          </div>
+        </div>
+        <div class="faq-tags" id="faqTags"></div>
+        <div class="faq-body">
+          <div class="faq-list" id="faqList"></div>
+          <div class="faq-detail" id="faqDetail">
+            <div class="faq-detail-head">
+              <div class="faq-chip" id="faqDetailCategory">Umum</div>
+              <div class="faq-detail-meta" id="faqDetailMeta">Status: -</div>
+            </div>
+            <h4 class="faq-detail-title" id="faqDetailTitle">Pilih pertanyaan di daftar.</h4>
+            <div class="faq-detail-answer" id="faqDetailAnswer">Jawaban akan tampil otomatis di sini.</div>
+          </div>
+        </div>
+        <div class="faq-status" id="faqStatus">Status FAQ: menunggu data.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>(c) 2025 SI Data Informasi dan Layanan Keppegawaian. Sub Kelompok Kepegawaian Dinas Kesehatan Provinsi DKI Jakarta.</footer>
+
+  <script src="loader.js?v=20251224-1"></script>
+
+
+  <script>
+    // --- BASE PATH FIX
+    const BASE = (() => {
+      const parts = location.pathname.split('/').filter(Boolean);
+      return parts.length && parts[0].toUpperCase() === 'DATA_PEGAWAI' ? '/' + parts[0] + '/' : '/';
+    })();
+
+    // Fix favicon path (works in subfolder)
+    const favicon = document.querySelector("link[rel='icon']");
+    if (favicon) favicon.href = BASE + 'foto/Dinkes.png';
+
+    // --- API SETUP
+    const API_BASE = localStorage.getItem('apiBase') || 'http://172.31.254.56:3000';
+
+    if (window.AppLoader) window.AppLoader.wrapFetch(API_BASE);
+
+    const statusEl = document.getElementById('status');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginForm = document.getElementById('loginForm');
+    const clockEl = document.getElementById('clock');
+
+    const faqList = document.getElementById('faqList');
+    const faqTags = document.getElementById('faqTags');
+    const faqSearch = document.getElementById('faqSearch');
+    const faqStatus = document.getElementById('faqStatus');
+    const faqDetailCategory = document.getElementById('faqDetailCategory');
+    const faqDetailTitle = document.getElementById('faqDetailTitle');
+    const faqDetailAnswer = document.getElementById('faqDetailAnswer');
+    const faqDetailMeta = document.getElementById('faqDetailMeta');
+    const faqCount = document.getElementById('faqCount');
+    const faqCountBadge = document.getElementById('faqCountBadge');
+    const faqStatusBadge = document.getElementById('faqStatusBadge');
+
+    let serverReady = false;
+
+    function setStatus(msg, tone = '') {
+      statusEl.textContent = 'Status: ' + msg;
+      statusEl.classList.remove('success','error','warn');
+      if (tone) statusEl.classList.add(tone);
+    }
+
+
+    // --- Clock
+    function updateClock(){
+      const now = new Date();
+      const hari = now.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      const jam = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      if (clockEl) clockEl.textContent = hari + ' - ' + jam + ' WIB';
+    }
+    updateClock(); setInterval(updateClock, 1000);
+
+    // --- FAQ
+    const faqState = { items: [], categories: [], activeCategory: '', filtered: [], activeId: '' };
+    const fallbackFaq = [
+      { id: 'faq-1', category: 'Mutasi', question: 'Apa itu usulan mutasi pegawai?', answer: 'Usulan mutasi adalah proses pengajuan perpindahan pegawai untuk penempatan baru sesuai kebutuhan organisasi.' },
+      { id: 'faq-2', category: 'Pemutusan JF', question: 'Kapan pemutusan jabatan fungsional diajukan?', answer: 'Pemutusan JF diajukan saat terdapat perubahan kebutuhan formasi atau kebijakan organisasi terkait jabatan fungsional.' },
+      { id: 'faq-3', category: 'Akun', question: 'Bagaimana jika lupa password?', answer: 'Silakan hubungi admin Subkelompok Kepegawaian untuk reset atau bantuan akses akun.' }
+    ];
+
+    function escapeHtml(str){
+      return String(str || '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
+    function toBadgeStatus(message){
+      const text = String(message || '').toLowerCase();
+      if (!text) return '-';
+      if (text.includes('memuat')) return 'Memuat';
+      if (text.includes('siap')) return 'Siap';
+      if (text.includes('contoh')) return 'Contoh';
+      if (text.includes('gagal')) return 'Gagal';
+      return message || '-';
+    }
+
+    function setFaqStatus(message){
+      if (faqStatus) faqStatus.textContent = 'Status FAQ: ' + message;
+      if (faqStatusBadge) faqStatusBadge.textContent = toBadgeStatus(message);
+    }
+
+    function renderFaqTags(){
+      if (!faqTags) return;
+      const tags = ['Semua', ...faqState.categories];
+      faqTags.innerHTML = tags.map((tag) => {
+        const key = tag === 'Semua' ? '' : tag;
+        const active = faqState.activeCategory === key;
+        return `<span class="faq-tag${active ? ' active' : ''}" data-category="${escapeHtml(key)}">${escapeHtml(tag)}</span>`;
+      }).join('');
+    }
+
+    function setActiveFaq(id){
+      faqState.activeId = id || '';
+      const active = faqState.filtered.find(item => String(item.id) === String(faqState.activeId));
+      if (faqDetailCategory) faqDetailCategory.textContent = active?.category || 'Umum';
+      if (faqDetailTitle) faqDetailTitle.textContent = active?.question || 'Pilih pertanyaan di daftar.';
+      if (faqDetailAnswer) faqDetailAnswer.textContent = active?.answer || 'Jawaban akan tampil otomatis di sini.';
+      if (faqDetailMeta) {
+        const statusText = active?.status ? active.status : '-';
+        faqDetailMeta.textContent = 'Status: ' + statusText;
+      }
+      if (faqList) {
+        faqList.querySelectorAll('.faq-item').forEach((el) => {
+          const isActive = el.dataset.id === faqState.activeId;
+          el.classList.toggle('active', isActive);
+          el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+      }
+    }
+
+    function renderFaqList(list){
+      if (!faqList) return;
+      if (!list.length){
+        faqList.innerHTML = '<div class="faq-empty">Belum ada FAQ yang ditampilkan.</div>';
+        setActiveFaq('');
+        return;
+      }
+      faqList.innerHTML = list.map((item, idx) => {
+        const id = escapeHtml(item.id || `faq-${idx}`);
+        const question = escapeHtml(item.question || '-');
+        const rawAnswer = item.answer || '-';
+        const category = escapeHtml(item.category || 'Umum');
+        const previewText = rawAnswer.length > 120 ? `${rawAnswer.slice(0, 120)}...` : rawAnswer;
+        const preview = escapeHtml(previewText);
+        return `
+          <button type="button" class="faq-item" data-id="${id}" aria-pressed="false">
+            <div class="faq-item-index">${idx + 1}</div>
+            <div class="faq-item-body">
+              <div class="faq-item-head">
+                <span class="faq-chip">${category}</span>
+                <span class="faq-item-meta">FAQ ${idx + 1}</span>
+              </div>
+              <div class="faq-item-title">${question}</div>
+              <div class="faq-item-preview">${preview || '-'}</div>
+            </div>
+            <div class="faq-item-arrow" aria-hidden="true"></div>
+          </button>
+        `;
+      }).join('');
+      const nextActive = faqState.activeId && list.some(item => String(item.id) === String(faqState.activeId))
+        ? faqState.activeId
+        : (list[0]?.id || '');
+      setActiveFaq(nextActive);
+    }
+
+    function applyFaqFilters(){
+      const term = (faqSearch?.value || '').toLowerCase().trim();
+      const active = faqState.activeCategory;
+      let list = faqState.items.slice();
+      if (active) list = list.filter(item => (item.category || '').toLowerCase() === active.toLowerCase());
+      if (term) {
+        list = list.filter(item => {
+          const q = (item.question || '').toLowerCase();
+          const a = (item.answer || '').toLowerCase();
+          return q.includes(term) || a.includes(term);
+        });
+      }
+      faqState.filtered = list;
+      renderFaqList(list);
+      if (faqCount) faqCount.textContent = `${list.length} pertanyaan`;
+      if (faqCountBadge) faqCountBadge.textContent = String(list.length);
+    }
+
+    async function loadFaq(){
+      if (!faqList) return;
+      setFaqStatus('memuat data...');
+      try {
+        const res = await fetch(`${API_BASE}?action=qna_list&status=published&limit=50`);
+        const body = await res.json();
+        if (!res.ok || !body.ok) throw new Error(body.error || 'Gagal memuat FAQ');
+        const items = (body.rows || []).map((item, idx) => ({
+          id: item.id || `faq-${idx + 1}`,
+          category: item.category || 'Umum',
+          question: item.question || '',
+          answer: item.answer || '',
+          status: item.status || ''
+        })).filter(item => item.question);
+
+        faqState.items = items.length ? items : fallbackFaq;
+        faqState.categories = Array.from(new Set(faqState.items.map(i => i.category).filter(Boolean))).sort();
+        faqState.activeCategory = '';
+        faqState.activeId = '';
+        renderFaqTags();
+        applyFaqFilters();
+        setFaqStatus(items.length ? 'data FAQ siap' : 'gunakan data contoh');
+      } catch (err) {
+        faqState.items = fallbackFaq;
+        faqState.categories = Array.from(new Set(faqState.items.map(i => i.category))).sort();
+        faqState.activeCategory = '';
+        faqState.activeId = '';
+        renderFaqTags();
+        applyFaqFilters();
+        setFaqStatus('gagal memuat FAQ, tampilkan contoh');
+      }
+    }
+
+    async function checkServer() {
+      try {
+        const res = await fetch(API_BASE);
+        const body = await res.json();
+        if (res.ok && (body.ok || body.success)) {
+          serverReady = true;
+          loginBtn.disabled = false;
+          setStatus('Server siap, Silahkan login.', 'success');
+        } else {
+          setStatus('Server tidak siap.', 'warn');
+        }
+      } catch (err) {
+        setStatus('Gagal konek server: ' + err.message, 'error');
+      }
+    }
+    checkServer();
+
+    if (faqTags) {
+      faqTags.addEventListener('click', (e) => {
+        const tag = e.target.closest('.faq-tag');
+        if (!tag) return;
+        faqState.activeCategory = tag.dataset.category || '';
+        renderFaqTags();
+        applyFaqFilters();
+      });
+    }
+    if (faqSearch) {
+      faqSearch.addEventListener('input', () => applyFaqFilters());
+    }
+    if (faqList) {
+      faqList.addEventListener('click', (e) => {
+        const item = e.target.closest('.faq-item');
+        if (!item) return;
+        setActiveFaq(item.dataset.id || '');
+      });
+    }
+    loadFaq();
+
+    // --- Password toggle
+    function initPasswordToggles(){
+      document.querySelectorAll('.toggle-visibility').forEach(btn => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        btn.setAttribute('data-state', 'hidden');
+        btn.addEventListener('click', () => {
+          const show = input.type === 'password';
+          input.type = show ? 'text' : 'password';
+          btn.setAttribute('data-state', show ? 'shown' : 'hidden');
+          btn.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
+        });
+      });
+    }
+    initPasswordToggles();
+
+    // --- LOGIN (FIXED: token disimpan konsisten ke authUser.session)
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!serverReady) { setStatus('Server belum siap.', 'warn'); return; }
+      loginBtn.disabled = true;
+      setStatus('Memproses login...');
+
+      const data = new FormData(loginForm);
+      const payload = {
+        username: String(data.get('username') || ''),
+        password: String(data.get('password') || ''),
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || !body.success) throw new Error(body.message || 'Login gagal');
+        const userPayload = body.user || null;
+        const sessionToken = body.token || body.session_token || body.session;
+        const sessionExpires = body.session_expires_in || (body.data && body.data.session_expires_in);
+        if (!sessionToken) throw new Error('Token sesi tidak ditemukan dari server');
+        const user = (userPayload && typeof userPayload === 'object') ? { ...userPayload } : { username: payload.username };
+        user.session = sessionToken;
+        if (sessionExpires) user.session_expires_in = sessionExpires;
+        if (window.AppLoader && typeof window.AppLoader.setAuthUser === 'function') {
+          window.AppLoader.setAuthUser(user);
+        } else {
+          localStorage.setItem('authUser', JSON.stringify(user));
+          try { localStorage.setItem('lastActivityAt', String(Date.now())); } catch (_) { /* ignore */ }
+        }
+        setStatus('Login berhasil. Membuka home...', 'success');
+        window.location.href = BASE + 'home/';
+      } catch (err) {
+        const msg = err && err.message ? err.message : 'Login gagal';
+        setStatus('Gagal login: ' + msg, 'error');
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

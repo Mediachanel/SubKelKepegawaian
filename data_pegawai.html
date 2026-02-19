@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Pegawai UKPD (Node.js ↔ Google Sheets)</title>
+<style>
+  :root {
+    --brand:#1ab14b;
+    --brand-dark:#0f7f31;
+    --bg:#f5f6f8;
+    --card:#fff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#cbd5e1;
+    --radius-lg:12px;
+    --radius-md:8px;
+    --radius-sm:6px;
+    --shadow-card:0 10px 24px -8px rgba(0,0,0,.12);
+    --shadow-btn:0 10px 20px -8px rgba(26,177,75,.6);
+  }
+  body {
+    font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    padding:20px;
+    color:var(--text);
+    line-height:1.45;
+  }
+  header {
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    font-size:1.25rem;
+    font-weight:600;
+    margin-bottom:16px;
+  }
+  header .emoji { font-size:1.3rem; }
+
+  .layout { display:block; }
+  @media(min-width:768px){
+    .layout {
+      display:grid;
+      grid-template-columns:1fr 2fr;
+      gap:20px;
+    }
+  }
+
+  .card {
+    background:var(--card);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card);
+    padding:16px 20px;
+    margin-bottom:20px;
+  }
+
+  .card-head {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:12px;
+    gap:12px;
+  }
+  .card-head-left h2 {
+    font-size:1rem;
+    font-weight:600;
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .card-head-right {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+  }
+
+  .notice {
+    background:#ecfdf5;
+    border:1px solid #6ee7b7;
+    color:#065f46;
+    font-size:.8rem;
+    line-height:1.4;
+    padding:8px 10px;
+    border-radius:var(--radius-md);
+    margin-bottom:12px;
+  }
+  .notice b { color:#000; }
+
+  form label {
+    display:block;
+    font-size:.8rem;
+    font-weight:500;
+    margin-bottom:4px;
+    color:#374151;
+  }
+  form input, select {
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:8px 10px;
+    font-size:.9rem;
+    margin-bottom:12px;
+    background-color:#eef4ff;
+    color:#111827;
+  }
+  form input:focus,
+  select:focus {
+    outline:2px solid #1ab14b44;
+    border-color:var(--brand);
+    background-color:#fff;
+  }
+
+  .actions-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  button {
+    cursor:pointer;
+    border:0;
+    border-radius:var(--radius-md);
+    padding:10px 14px;
+    font-size:.8rem;
+    font-weight:600;
+    line-height:1.2;
+    background:var(--brand);
+    color:#fff;
+    box-shadow:var(--shadow-btn);
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+  }
+  button.secondary {
+    background:#6b7280;
+    box-shadow:0 10px 20px -8px rgba(107,114,128,.6);
+  }
+  button.info {
+    background:#0ea5e9;
+    box-shadow:0 10px 20px -8px rgba(14,165,233,.6);
+  }
+  button.danger {
+    background:#c0392b;
+    box-shadow:0 10px 20px -8px rgba(192,57,43,.7);
+  }
+  button.small {
+    padding:6px 10px;
+    font-size:.7rem;
+    border-radius:var(--radius-sm);
+  }
+  .ghost {
+    background:#fff;
+    color:#1f2937;
+    border:1px solid #cbd5e1;
+    box-shadow:none;
+  }
+
+  .note-under-form {
+    color:var(--muted);
+    font-size:.75rem;
+    line-height:1.4;
+    margin-top:8px;
+  }
+
+  table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:.8rem;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th, td {
+    padding:8px 10px;
+    border-bottom:1px solid #e5e7eb;
+    vertical-align:top;
+    text-align:left;
+  }
+  th {
+    background:#ecfdf5;
+    font-weight:600;
+    font-size:.7rem;
+    color:#065f46;
+    line-height:1.2;
+  }
+  tr:hover td {
+    background:#fafafa;
+  }
+  .row-actions {
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+
+  .table-footnote {
+    color:var(--muted);
+    font-size:.75rem;
+    margin-top:10px;
+  }
+
+  /* toolbar tabel */
+  .table-toolbar {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:8px;
+    margin-bottom:12px;
+    font-size:.8rem;
+  }
+  .table-toolbar-left,
+  .table-toolbar-right{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:flex-end;
+  }
+  .table-toolbar .form-group-inline {
+    display:flex;
+    flex-direction:column;
+    font-size:.75rem;
+    color:#374151;
+  }
+  .table-toolbar .form-group-inline input,
+  .table-toolbar .form-group-inline select {
+    width:auto;
+    min-width:70px;
+    max-width:140px;
+    background:#fff;
+    font-size:.8rem;
+    margin-bottom:0;
+  }
+  .table-toolbar .form-group-inline label {
+    font-size:.7rem;
+    color:#6b7280;
+    margin-bottom:2px;
+  }
+
+  /* pagination nav */
+  .pagination-bar {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    font-size:.75rem;
+    color:#4b5563;
+    margin-top:12px;
+  }
+  .pagination-controls {
+    display:flex;
+    gap:4px;
+    flex-wrap:wrap;
+  }
+  .pagination-controls button {
+    background:#fff;
+    color:#1f2937;
+    border:1px solid #cbd5e1;
+    box-shadow:none;
+  }
+  .pagination-controls button[disabled] {
+    opacity:.4;
+    cursor:not-allowed;
+  }
+
+  /* modal profil */
+  .modal-backdrop {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    z-index:9999;
+  }
+  .modal-card {
+    background:#fff;
+    border-radius:var(--radius-lg);
+    box-shadow:0 24px 48px rgba(0,0,0,.24);
+    max-width:360px;
+    width:100%;
+    padding:16px 20px;
+    font-size:.85rem;
+    line-height:1.4;
+  }
+  .modal-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+    font-weight:600;
+  }
+  .modal-close {
+    background:#ef4444;
+    color:#fff;
+    border:0;
+    border-radius:var(--radius-sm);
+    font-size:.7rem;
+    padding:4px 8px;
+    cursor:pointer;
+  }
+  .modal-body div {
+    margin-bottom:6px;
+  }
+  .label-sm {
+    font-size:.7rem;
+    color:#6b7280;
+    display:block;
+    margin-bottom:1px;
+  }
+  .value-sm {
+    font-size:.8rem;
+    color:#1f2937;
+    font-weight:500;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">📋</span>
+  <span>Data Pegawai UKPD</span>
+</header>
+
+<div class="layout">
+
+  <!-- FORM -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-head-left">
+        <h2>Form Pegawai</h2>
+      </div>
+      <div class="card-head-right">
+        <button type="button" id="btn-new" class="ghost small">➕ Tambah Baru</button>
+      </div>
+    </div>
+
+    <div class="notice">
+      • Isi form lalu klik <b>Simpan</b><br>
+      • Klik tombol ✏️ di tabel untuk edit (data akan naik ke form)<br>
+      • Klik 🗑 untuk hapus baris<br>
+      • Field yang wajib: <b>Nama</b> dan <b>UKPD</b>
+    </div>
+
+    <form id="pegawaiForm">
+      <input type="hidden" id="form-id" />
+
+      <label for="form-nip">NIP / NRK (opsional)</label>
+      <input id="form-nip" placeholder="1990xxxxxxxxxx">
+
+      <label for="form-nama">Nama *</label>
+      <input id="form-nama" placeholder="Nama lengkap" required>
+
+      <label for="form-jabatan">Jabatan</label>
+      <input id="form-jabatan" placeholder="Perawat Ahli Pertama">
+
+      <label for="form-ukpd">UKPD *</label>
+      <input id="form-ukpd" placeholder="Puskesmas Tebet" required>
+
+      <div class="actions-row">
+        <button type="submit" id="btn-submit">💾 Simpan</button>
+        <button type="button" id="btn-reset" class="secondary">↺ Reset</button>
+        <button type="button" id="reloadBtn" class="info small">↻ Reload</button>
+      </div>
+
+      <div class="note-under-form">
+        <div><b>ID tersembunyi</b> akan otomatis terisi saat mode edit.</div>
+        <div>Kalau ID kosong = mode tambah baru.</div>
+      </div>
+    </form>
+  </section>
+
+  <!-- TABEL -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-head-left">
+        <h2>Daftar Pegawai</h2>
+      </div>
+      <div class="card-head-right">
+        <!-- kosong dulu / bisa isi tombol mass-action nanti -->
+      </div>
+    </div>
+
+    <!-- toolbar cari & page size -->
+    <div class="table-toolbar">
+      <div class="table-toolbar-left">
+        <div class="form-group-inline">
+          <label for="searchInput">Cari nama / NIP</label>
+          <input id="searchInput" placeholder="ketik nama atau NIP...">
+        </div>
+
+        <div class="form-group-inline">
+          <label for="pageSizeSelect">Tampil per halaman</label>
+          <select id="pageSizeSelect">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-toolbar-right">
+        <button class="ghost small" type="button" id="btn-new-top">➕ Tambah Baru</button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>NIP/NRK</th>
+          <th>Nama</th>
+          <th>Jabatan</th>
+          <th>UKPD</th>
+          <th>Update</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="pegawaiTbody">
+        <!-- diisi via JS -->
+      </tbody>
+    </table>
+
+    <div class="pagination-bar">
+      <div class="pagination-info" id="paginationInfo">
+        <!-- "Menampilkan 1-10 dari 57 data" -->
+      </div>
+      <div class="pagination-controls">
+        <button id="prevPageBtn" class="small ghost">⟨ Prev</button>
+        <button id="nextPageBtn" class="small ghost">Next ⟩</button>
+      </div>
+    </div>
+
+    <div class="table-footnote">
+      Data diambil & disimpan ke Google Sheet melalui server Node.js lokal.
+    </div>
+  </section>
+
+</div>
+
+<!-- MODAL PROFIL -->
+<div class="modal-backdrop" id="profilModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>Profil Pegawai</div>
+      <button class="modal-close" onclick="closeProfil()">Tutup</button>
+    </div>
+    <div class="modal-body" id="profilBody">
+      <!-- detail isi via JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================
+// KONFIG BACKEND
+// =========================================
+const API_BASE = 'http://localhost:3000';
+
+// =========================================
+// STATE GLOBAL (data table)
+// =========================================
+let pegawaiDataAll = [];   // semua data dari server
+let filteredData = [];     // data setelah search
+let currentPage = 1;       // halaman aktif (1-based)
+let pageSize = 10;         // jumlah baris per halaman
+
+// =========================================
+// HELPERS
+// =========================================
+
+function resetForm() {
+  document.getElementById('form-id').value        = '';
+  document.getElementById('form-nip').value       = '';
+  document.getElementById('form-nama').value      = '';
+  document.getElementById('form-jabatan').value   = '';
+  document.getElementById('form-ukpd').value      = '';
+}
+
+function openProfil(p) {
+  const modal = document.getElementById('profilModal');
+  const body  = document.getElementById('profilBody');
+  body.innerHTML = `
+    <div>
+      <span class="label-sm">ID</span>
+      <span class="value-sm">${p.id || '-'}</span>
+    </div>
+    <div>
+      <span class="label-sm">NIP / NRK</span>
+      <span class="value-sm">${p.nip || '-'}</span>
+    </div>
+    <div>
+      <span class="label-sm">Nama</span>
+      <span class="value-sm">${p.nama || '-'}</span>
+    </div>
+    <div>
+      <span class="label-sm">Jabatan</span>
+      <span class="value-sm">${p.jabatan || '-'}</span>
+    </div>
+    <div>
+      <span class="label-sm">UKPD</span>
+      <span class="value-sm">${p.ukpd || '-'}</span>
+    </div>
+    <div>
+      <span class="label-sm">Update Terakhir</span>
+      <span class="value-sm">${p.tgl_update || '-'}</span>
+    </div>
+  `;
+  modal.style.display = 'flex';
+}
+function closeProfil(){
+  document.getElementById('profilModal').style.display = 'none';
+}
+
+function editRow(p) {
+  document.getElementById('form-id').value        = p.id || '';
+  document.getElementById('form-nip').value       = p.nip || '';
+  document.getElementById('form-nama').value      = p.nama || '';
+  document.getElementById('form-jabatan').value   = p.jabatan || '';
+  document.getElementById('form-ukpd').value      = p.ukpd || '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function hapusRow(id) {
+  if (!id) return;
+  if (!confirm('Hapus ID '+id+' ?')) return;
+  try {
+    const res = await fetch(`${API_BASE}/pegawai/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ id })
+    });
+    const json = await res.json();
+    if (!json.success) {
+      alert('Gagal hapus: ' + json.message);
+      return;
+    }
+    await loadPegawai(); // reload data full
+    alert('Data dihapus.');
+  } catch(err) {
+    alert('DELETE error: ' + err);
+    console.error('DELETE error:', err);
+  }
+}
+
+// =========================================
+// TABLE RENDERING (search + pagination)
+// =========================================
+
+// Terapkan filter search ke pegawaiDataAll -> simpan di filteredData
+function applyFilter() {
+  const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!keyword) {
+    filteredData = [...pegawaiDataAll];
+  } else {
+    filteredData = pegawaiDataAll.filter(p => {
+      const nama = (p.nama || '').toLowerCase();
+      const nip  = (p.nip  || '').toLowerCase();
+      return nama.includes(keyword) || nip.includes(keyword);
+    });
+  }
+  // reset page ke 1 setiap kali filter berubah
+  currentPage = 1;
+}
+
+// ambil slice data untuk halaman aktif
+function getPageData() {
+  const startIdx = (currentPage - 1) * pageSize;
+  const endIdx   = startIdx + pageSize;
+  return filteredData.slice(startIdx, endIdx);
+}
+
+// update info "Menampilkan X-Y dari Z data"
+function renderPaginationInfo() {
+  const total = filteredData.length;
+  if (total === 0) {
+    document.getElementById('paginationInfo').textContent =
+      'Tidak ada data';
+    return;
+  }
+
+  const startNum = (currentPage - 1) * pageSize + 1;
+  const endNum   = Math.min(startNum + pageSize - 1, total);
+
+  document.getElementById('paginationInfo').textContent =
+    `Menampilkan ${startNum}-${endNum} dari ${total} data`;
+}
+
+// enable/disable tombol prev/next
+function updatePaginationButtons() {
+  const total = filteredData.length;
+  const maxPage = Math.ceil(total / pageSize) || 1;
+
+  document.getElementById('prevPageBtn').disabled = (currentPage <= 1);
+  document.getElementById('nextPageBtn').disabled = (currentPage >= maxPage);
+}
+
+// render baris <tr> ke tabel sesuai halaman aktif
+function renderTableBody() {
+  const tbody = document.getElementById('pegawaiTbody');
+  tbody.innerHTML = '';
+
+  const pageRows = getPageData();
+
+  pageRows.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.id || ''}</td>
+      <td>${p.nip || ''}</td>
+      <td>${p.nama || ''}</td>
+      <td>${p.jabatan || ''}</td>
+      <td>${p.ukpd || ''}</td>
+      <td><small>${p.tgl_update || ''}</small></td>
+      <td class="row-actions">
+        <button class="small" style="background:#10b981"
+          onclick='editRow(${JSON.stringify(p).replace(/"/g,"&quot;")})'>✏️</button>
+        <button class="small danger"
+          onclick='hapusRow("${p.id||""}")'>🗑</button>
+        <button class="small ghost"
+  onclick='window.location.href = "profil.html?id=${p.id || ""}";'>👁 Profil</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  renderPaginationInfo();
+  updatePaginationButtons();
+}
+
+// fungsi utama refresh tampilan tabel
+function refreshTableView() {
+  applyFilter();       // filteredData diset & currentPage=1 kalau baru filter
+  renderTableBody();   // render table with pagination slice
+}
+
+// kalau cuma ganti halaman atau pageSize
+function rerenderTableOnly() {
+  renderTableBody();
+}
+
+// =========================================
+// LOAD DATA DARI BACKEND
+// =========================================
+async function loadPegawai() {
+  try {
+    const res = await fetch(`${API_BASE}/pegawai`);
+    const json = await res.json();
+    pegawaiDataAll = json.data || [];
+    refreshTableView();
+  } catch(err) {
+    alert('GET error: ' + err);
+    console.error('GET error:', err);
+  }
+}
+
+// =========================================
+// FORM SUBMIT (CREATE / UPDATE)
+// =========================================
+document.getElementById('pegawaiForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+
+  const id      = document.getElementById('form-id').value.trim();
+  const nip     = document.getElementById('form-nip').value.trim();
+  const nama    = document.getElementById('form-nama').value.trim();
+  const jabatan = document.getElementById('form-jabatan').value.trim();
+  const ukpd    = document.getElementById('form-ukpd').value.trim();
+
+  if (!nama || !ukpd) {
+    alert('Nama dan UKPD wajib.');
+    return;
+  }
+
+  const payload = { id, nip, nama, jabatan, ukpd };
+  const endpoint = id ? '/pegawai/update' : '/pegawai/create';
+
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!json.success) {
+      alert('Gagal simpan: ' + json.message);
+      console.warn('SUBMIT response:', json);
+      return;
+    }
+
+    await loadPegawai();
+    resetForm();
+    alert('Data tersimpan.');
+  } catch(err) {
+    alert('SUBMIT error: ' + err);
+    console.error('SUBMIT error:', err);
+  }
+});
+
+// =========================================
+// EVENT HANDLER UI TOOLBAR / PAGINATION
+// =========================================
+
+// tombol Reset form
+document.getElementById('btn-reset').addEventListener('click', resetForm);
+
+// tombol Tambah Baru (atas dan bawah)
+document.getElementById('btn-new').addEventListener('click', resetForm);
+document.getElementById('btn-new-top').addEventListener('click', resetForm);
+
+// tombol Reload
+document.getElementById('reloadBtn').addEventListener('click', loadPegawai);
+
+// input Search
+document.getElementById('searchInput').addEventListener('input', () => {
+  // setiap ketik search -> mulai ulang dari page 1
+  currentPage = 1;
+  applyFilter();
+  rerenderTableOnly();
+});
+
+// dropdown page size
+document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+  pageSize = parseInt(e.target.value,10) || 10;
+  currentPage = 1;
+  rerenderTableOnly();
+});
+
+// tombol Prev
+document.getElementById('prevPageBtn').addEventListener('click', () => {
+  if (currentPage > 1) {
+    currentPage--;
+    rerenderTableOnly();
+  }
+});
+
+// tombol Next
+document.getElementById('nextPageBtn').addEventListener('click', () => {
+  const total = filteredData.length;
+  const maxPage = Math.ceil(total / pageSize) || 1;
+  if (currentPage < maxPage) {
+    currentPage++;
+    rerenderTableOnly();
+  }
+});
+
+// klik backdrop modal -> tutup
+document.getElementById('profilModal').addEventListener('click', (e) => {
+  if (e.target.id === 'profilModal') {
+    closeProfil();
+  }
+});
+
+// =========================================
+// INIT
+// =========================================
+(async function init(){
+  await loadPegawai(); // fetch pertama
+})();
+</script>
+
+</body>
+</html>
