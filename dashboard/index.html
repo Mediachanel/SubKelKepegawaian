@@ -187,25 +187,16 @@
             <div class="kpi-progress" style="--kpi:68%;"><span></span></div>
             <div class="kpi-meta"><span class="kpi-dot"></span>update: 2:15 am</div>
           </div>
-          <div class="card text-white bg-gradient-to-br from-violet-700 to-pjlp shadow-soft" data-kpi="PPPK Paruh Waktu">
+          <div class="card text-white bg-gradient-to-br from-violet-700 to-pjlp shadow-soft" data-kpi="PJLP">
             <div class="flex items-center gap-3">
               <div class="w-11 h-11 rounded-xl bg-white/20 grid place-items-center text-lg">J</div>
-              <div><p class="text-xs/4 opacity-90">Jenis Pegawai</p><p class="text-sm font-semibold">PPPK Paruh Waktu</p></div>
+              <div><p class="text-xs/4 opacity-90">Jenis Pegawai</p><p class="text-sm font-semibold">PJLP</p></div>
             </div>
             <div class="mt-3 text-3xl font-bold" data-count>0</div>
             <div class="kpi-progress" style="--kpi:49%;"><span></span></div>
             <div class="kpi-meta"><span class="kpi-dot"></span>update: 2:15 am</div>
           </div>
         </section>
-
-        <div class="flex items-center justify-end gap-2 text-sm text-slate-600" data-animate>
-          <span>Tampilan chart:</span>
-          <select id="chartMode" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm">
-            <option value="status" selected>Status Pegawai</option>
-            <option value="gender">Jenis Kelamin</option>
-            <option value="marital">Status Pernikahan</option>
-          </select>
-        </div>
 
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div class="card" data-animate>
@@ -219,12 +210,22 @@
           </div>
           <div class="card" data-animate>
             <div class="flex items-center justify-between">
-              <h3 class="text-sm font-semibold" id="ukpdTitle">Distribusi Pegawai per UKPD (Aktif)</h3>
-              <button data-download="ukpd" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100">Unduh PNG</button>
+              <h3 class="text-sm font-semibold" id="wilayahTitle">Distribusi Pegawai per Wilayah (Aktif)</h3>
+              <button data-download="wilayah" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100">Unduh PNG</button>
             </div>
             <div class="mt-3 flex items-center justify-center" style="height: var(--h-ukpd);">
-              <canvas id="ukpdChart" class="w-full h-full"></canvas>
+              <canvas id="wilayahChart" class="w-full h-full"></canvas>
             </div>
+          </div>
+        </section>
+
+        <section class="card" data-animate>
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h3 class="text-sm font-semibold" id="ukpdTitle">Distribusi Pegawai per UKPD (Aktif)</h3>
+            <button data-download="ukpd" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100">Unduh PNG</button>
+          </div>
+          <div class="mt-3 flex items-center justify-center" style="height: var(--h-ukpd);">
+            <canvas id="ukpdChart" class="w-full h-full"></canvas>
           </div>
         </section>
 
@@ -240,7 +241,7 @@
           </div>
           <div class="card" data-animate>
             <div class="flex items-center justify-between">
-              <h3 class="text-sm font-semibold" id="rumpunTitle">Rumpun A - Status Pegawai</h3>
+              <h3 class="text-sm font-semibold" id="rumpunTitle">Rumpun × Status Pegawai (Aktif)</h3>
               <button data-download="rumpun" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100">Unduh PNG</button>
             </div>
             <div class="mt-3 flex items-center justify-center" style="height: var(--h-rumpun);">
@@ -264,7 +265,7 @@
                   <th class="px-3 py-2 text-center">CPNS</th>
                   <th class="px-3 py-2 text-center">PPPK</th>
                   <th class="px-3 py-2 text-center">PROFESIONAL</th>
-                  <th class="px-3 py-2 text-center">PPPK Paruh Waktu</th>
+                  <th class="px-3 py-2 text-center">PJLP</th>
                   <th class="px-3 py-2 text-center">Total</th>
                 </tr>
               </thead>
@@ -302,9 +303,9 @@
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) favicon.href = BASE + 'foto/Dinkes.png';
     const API_BASE = localStorage.getItem('apiBase') || 'https://api.kepegawaian.media';
-    const statusOrder = ['PNS','CPNS','PPPK','PROFESIONAL','PPPK Paruh Waktu'];
-    const statusLabels = { PNS:'PNS', CPNS:'CPNS', PPPK:'PPPK', PROFESIONAL:'PROFESIONAL', 'PPPK Paruh Waktu':'PPPK Paruh Waktu' };
-    const statusColors = { PNS:'#0EA5E9', CPNS:'#06B6D4', PPPK:'#22C55E', PROFESIONAL:'#14B8A6', 'PPPK Paruh Waktu':'#8B5CF6' };
+    const statusOrder = ['PNS','CPNS','PPPK','PROFESIONAL','PJLP'];
+    const statusLabels = { PNS:'PNS', CPNS:'CPNS', PPPK:'PPPK', PROFESIONAL:'PROFESIONAL', PJLP:'PJLP' };
+    const statusColors = { PNS:'#0EA5E9', CPNS:'#06B6D4', PPPK:'#22C55E', PROFESIONAL:'#14B8A6', PJLP:'#8B5CF6' };
     const genderOrder = ['LAKI','PEREMPUAN'];
     const genderLabels = { LAKI:'Laki-laki', PEREMPUAN:'Perempuan' };
     const genderColors = { LAKI:'#0EA5E9', PEREMPUAN:'#F97316' };
@@ -332,7 +333,7 @@ const loginUkpd = authUser?.namaUkpd || authUser?.username || '';
 const loginWilayah = authUser?.wilayah || '';
 document.body.classList.toggle('role-super', isSuper);
 
-    const charts = { status:null, ukpd:null, rumpun:null, pendidikan:null };
+    const charts = { status:null, wilayah:null, ukpd:null, rumpun:null, pendidikan:null };
     const DASH_CACHE_TTL = 2 * 60 * 1000;
 
     function getDashboardCacheKey(params){
@@ -362,7 +363,6 @@ document.body.classList.toggle('role-super', isSuper);
     const statusBar = document.getElementById('statusBar');
     const tableBody = document.querySelector('#ukpdTable tbody');
     const tableTotalRow = document.getElementById('tableTotalRow');
-    const chartModeSelect = document.getElementById('chartMode');
     let chartMode = 'status';
     let preparedCache = null;
     const roleBadge = document.getElementById('roleBadge');
@@ -415,7 +415,7 @@ document.body.classList.toggle('role-super', isSuper);
     document.querySelectorAll('[data-download]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const key = btn.getAttribute('data-download');
-        const map = { status:'statusChart', ukpd:'ukpdChart', rumpun:'rumpunChart', pendidikan:'pendidikanChart' };
+        const map = { status:'statusChart', wilayah:'wilayahChart', ukpd:'ukpdChart', rumpun:'rumpunChart', pendidikan:'pendidikanChart' };
         const id = map[key];
         if (!id) return;
         const canvas = document.getElementById(id);
@@ -440,7 +440,7 @@ document.body.classList.toggle('role-super', isSuper);
       function normalizeStatus(raw){
         const t = (raw || '').toUpperCase().trim();
         const compact = t.replace(/[^A-Z]/g, '');
-        if (compact.includes('PJLP') || compact.includes('PPPKPARUHWAKTU')) return 'PPPK Paruh Waktu';
+        if (compact.includes('PJLP') || compact.includes('PPPKPARUHWAKTU')) return 'PJLP';
         if (t === 'PNS') return 'PNS';
         if (t === 'CPNS') return 'CPNS';
         if (t.includes('PPPK') || t.includes('P3K')) return 'PPPK';
@@ -546,15 +546,16 @@ document.body.classList.toggle('role-super', isSuper);
     }
 
     function prepareData(rows){
-      const statusCounts = { PNS:0, CPNS:0, PPPK:0, PROFESIONAL:0, 'PPPK Paruh Waktu':0 };
+      const statusCounts = { PNS:0, CPNS:0, PPPK:0, PROFESIONAL:0, PJLP:0 };
       const genderCounts = { LAKI:0, PEREMPUAN:0 };
       const maritalCounts = { BELUM_MENIKAH:0, MENIKAH:0, CERAI_HIDUP:0, CERAI_MATI:0 };
-      const emptyStatusCounts = () => ({ PNS:0, CPNS:0, PPPK:0, PROFESIONAL:0, 'PPPK Paruh Waktu':0 });
+      const emptyStatusCounts = () => ({ PNS:0, CPNS:0, PPPK:0, PROFESIONAL:0, PJLP:0 });
       const emptyGenderCounts = () => ({ LAKI:0, PEREMPUAN:0 });
       const emptyMaritalCounts = () => ({ BELUM_MENIKAH:0, MENIKAH:0, CERAI_HIDUP:0, CERAI_MATI:0 });
       const unitStatusMap = {};
       const unitGenderMap = {};
       const unitMaritalMap = {};
+      const wilayahStatusMap = {};
       const wilMap = {};
       const rumpunStatusMap = {};
       const rumpunGenderMap = {};
@@ -572,6 +573,8 @@ document.body.classList.toggle('role-super', isSuper);
         const st = normalizeStatus(r.nama_jenis_pegawai || r.nama_status_aktif || r.nama_status_rumpun);
         if (st !== 'LAINNYA') {
           statusCounts[st] = (statusCounts[st] || 0) + 1;
+          wilayahStatusMap[wilayah] = wilayahStatusMap[wilayah] || emptyStatusCounts();
+          wilayahStatusMap[wilayah][st] += 1;
           wilMap[wilayah] = wilMap[wilayah] || {};
           wilMap[wilayah][unit] = wilMap[wilayah][unit] || emptyStatusCounts();
           wilMap[wilayah][unit][st] += 1;
@@ -644,6 +647,8 @@ document.body.classList.toggle('role-super', isSuper);
         statusCounts,
         genderCounts,
         maritalCounts,
+        wilayahLabelsStatus: Object.keys(wilayahStatusMap).sort(),
+        wilayahDatasetsStatus: makeDatasets(wilayahStatusMap, Object.keys(wilayahStatusMap).sort(), statusOrder, statusLabels, statusColors),
         unitLabelsStatus,
         unitLabelsGender,
         unitLabelsMarital,
@@ -693,32 +698,24 @@ document.body.classList.toggle('role-super', isSuper);
       requestAnimationFrame(step);
     }
 
-    function updateChartTitles(mode){
-      const isGender = mode === 'gender';
-      const isMarital = mode === 'marital';
+    function updateChartTitles(){
       const statusTitle = document.getElementById('statusTitle');
+      const wilayahTitle = document.getElementById('wilayahTitle');
       const ukpdTitle = document.getElementById('ukpdTitle');
       const pendidikanTitle = document.getElementById('pendidikanTitle');
       const rumpunTitle = document.getElementById('rumpunTitle');
-      if (statusTitle) statusTitle.textContent = isGender
-        ? 'Distribusi Pegawai per Jenis Kelamin (Aktif)'
-        : (isMarital ? 'Distribusi Pegawai per Status Pernikahan (Aktif)' : 'Distribusi Pegawai per Status (Aktif)');
-      if (ukpdTitle) ukpdTitle.textContent = isGender
-        ? 'Distribusi Pegawai per UKPD (Jenis Kelamin)'
-        : (isMarital ? 'Distribusi Pegawai per UKPD (Status Pernikahan)' : 'Distribusi Pegawai per UKPD (Aktif)');
-      if (pendidikanTitle) pendidikanTitle.textContent = isGender
-        ? 'Distribusi Pegawai per Jenjang Pendidikan (Jenis Kelamin)'
-        : (isMarital ? 'Distribusi Pegawai per Jenjang Pendidikan (Status Pernikahan)' : 'Distribusi Pegawai per Jenjang Pendidikan');
-      if (rumpunTitle) rumpunTitle.textContent = isGender
-        ? 'Rumpun A - Jenis Kelamin Pegawai'
-        : (isMarital ? 'Rumpun A - Status Pernikahan Pegawai' : 'Rumpun A - Status Pegawai');
+      if (statusTitle) statusTitle.textContent = 'Distribusi Pegawai per Status (Aktif)';
+      if (wilayahTitle) wilayahTitle.textContent = 'Distribusi Pegawai per Wilayah (Aktif)';
+      if (ukpdTitle) ukpdTitle.textContent = 'Distribusi Pegawai per UKPD (Aktif)';
+      if (pendidikanTitle) pendidikanTitle.textContent = 'Distribusi Pegawai per Jenjang Pendidikan';
+      if (rumpunTitle) rumpunTitle.textContent = 'Rumpun × Status Pegawai (Aktif)';
     }
 
     function renderCharts(data){
       if (typeof Chart === 'undefined') return;
       if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
 
-      const mode = chartMode === 'gender' ? 'gender' : (chartMode === 'marital' ? 'marital' : 'status');
+      const mode = 'status';
       const emptyPlugin = {
         id:'empty',
         afterDraw(chart){
@@ -741,20 +738,10 @@ document.body.classList.toggle('role-super', isSuper);
       const gridColor = () => isDark() ? '#334155' : '#e5e7eb';
       const commonAnim = { duration: 800, easing: 'easeOutQuart' };
 
-      const statusData = mode === 'gender'
-        ? {
-          labels: genderOrder.map(s => genderLabels[s]),
-          datasets: [{ data: genderOrder.map(s => data.genderCounts[s] || 0), backgroundColor: genderOrder.map(s => genderColors[s]) }]
-        }
-        : (mode === 'marital'
-          ? {
-            labels: maritalOrder.map(s => maritalLabels[s]),
-            datasets: [{ data: maritalOrder.map(s => data.maritalCounts[s] || 0), backgroundColor: maritalOrder.map(s => maritalColors[s]) }]
-          }
-          : {
-            labels: statusOrder.map(s => statusLabels[s]),
-            datasets: [{ data: statusOrder.map(s => data.statusCounts[s] || 0), backgroundColor: statusOrder.map(s => statusColors[s]) }]
-          });
+      const statusData = {
+        labels: statusOrder.map(s => statusLabels[s]),
+        datasets: [{ data: statusOrder.map(s => data.statusCounts[s] || 0), backgroundColor: statusOrder.map(s => statusColors[s]) }]
+      };
 
       destroyChart('status');
       charts.status = new Chart(document.getElementById('statusChart'), {
@@ -776,20 +763,27 @@ document.body.classList.toggle('role-super', isSuper);
         }
       });
 
-      const unitLabels = mode === 'gender'
-        ? data.unitLabelsGender
-        : (mode === 'marital' ? data.unitLabelsMarital : data.unitLabelsStatus);
-      const pendidikanLabels = mode === 'gender'
-        ? data.pendidikanLabelsGender
-        : (mode === 'marital' ? data.pendidikanLabelsMarital : data.pendidikanLabelsStatus);
-      const rumpunLabels = mode === 'gender'
-        ? data.rumpunLabelsGender
-        : (mode === 'marital' ? data.rumpunLabelsMarital : data.rumpunLabelsStatus);
+      const wilayahLabels = data.wilayahLabelsStatus || [];
+      const unitLabels = data.unitLabelsStatus || [];
+      const pendidikanLabels = data.pendidikanLabelsStatus || [];
+      const rumpunLabels = data.rumpunLabelsStatus || [];
+
+      destroyChart('wilayah');
+      charts.wilayah = new Chart(document.getElementById('wilayahChart'), {
+        type:'bar',
+        data:{ labels: wilayahLabels, datasets: JSON.parse(JSON.stringify(data.wilayahDatasetsStatus || [])) },
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ position:'top', align:'start', labels:{ usePointStyle:true } }, datalabels:{ display:false }, tooltip:{ callbacks:{ label:c=>`${c.dataset.label}: ${( +c.raw).toLocaleString('id-ID')}` } }, empty:{} },
+          scales:{ x:{ stacked:true, grid:{ color:gridColor } }, y:{ stacked:true, beginAtZero:true, grid:{ color:gridColor } } },
+          animation: commonAnim
+        }
+      });
 
       destroyChart('ukpd');
       charts.ukpd = new Chart(document.getElementById('ukpdChart'), {
         type:'bar',
-        data:{ labels: unitLabels, datasets: JSON.parse(JSON.stringify(mode === 'gender' ? data.unitDatasetsGender : (mode === 'marital' ? data.unitDatasetsMarital : data.unitDatasetsStatus))) },
+        data:{ labels: unitLabels, datasets: JSON.parse(JSON.stringify(data.unitDatasetsStatus || [])) },
         options:{
           responsive:true, maintainAspectRatio:false,
           plugins:{ legend:{ position:'top', align:'start', labels:{ usePointStyle:true } }, datalabels:{ display:false }, tooltip:{ callbacks:{ label:c=>`${c.dataset.label}: ${( +c.raw).toLocaleString('id-ID')}` } }, empty:{} },
@@ -801,7 +795,7 @@ document.body.classList.toggle('role-super', isSuper);
       destroyChart('pendidikan');
       charts.pendidikan = new Chart(document.getElementById('pendidikanChart'), {
         type:'bar',
-        data:{ labels: pendidikanLabels, datasets: JSON.parse(JSON.stringify(mode === 'gender' ? data.pendidikanDatasetsGender : (mode === 'marital' ? data.pendidikanDatasetsMarital : data.pendidikanDatasetsStatus))) },
+        data:{ labels: pendidikanLabels, datasets: JSON.parse(JSON.stringify(data.pendidikanDatasetsStatus || [])) },
         options:{
           indexAxis:'y',
           responsive:true, maintainAspectRatio:false,
@@ -814,7 +808,7 @@ document.body.classList.toggle('role-super', isSuper);
       destroyChart('rumpun');
       charts.rumpun = new Chart(document.getElementById('rumpunChart'), {
         type:'bar',
-        data:{ labels: rumpunLabels, datasets: JSON.parse(JSON.stringify(mode === 'gender' ? data.rumpunDatasetsGender : (mode === 'marital' ? data.rumpunDatasetsMarital : data.rumpunDatasetsStatus))) },
+        data:{ labels: rumpunLabels, datasets: JSON.parse(JSON.stringify(data.rumpunDatasetsStatus || [])) },
         options:{
           responsive:true, maintainAspectRatio:false,
           plugins:{ legend:{ position:'top', align:'start', labels:{ usePointStyle:true } }, datalabels:{ display:false }, tooltip:{ callbacks:{ label:c=>`${c.dataset.label}: ${( +c.raw).toLocaleString('id-ID')}` } }, empty:{} },
@@ -850,11 +844,11 @@ document.body.classList.toggle('role-super', isSuper);
             <td class="px-3 py-2 text-center">${(r.CPNS||0).toLocaleString('id-ID')}</td>
             <td class="px-3 py-2 text-center">${(r.PPPK||0).toLocaleString('id-ID')}</td>
             <td class="px-3 py-2 text-center">${(r.PROFESIONAL||0).toLocaleString('id-ID')}</td>
-            <td class="px-3 py-2 text-center">${(r['PPPK Paruh Waktu']||0).toLocaleString('id-ID')}</td>
+            <td class="px-3 py-2 text-center">${(r.PJLP||0).toLocaleString('id-ID')}</td>
             <td class="px-3 py-2 text-center font-semibold">${(r.total||0).toLocaleString('id-ID')}</td>
           `;
         } else {
-          totalP += r.PNS || 0; totalC += r.CPNS || 0; totalP3 += r.PPPK || 0; totalPro += r.PROFESIONAL || 0; totalJ += r['PPPK Paruh Waktu'] || 0; totalAll += r.total || 0;
+          totalP += r.PNS || 0; totalC += r.CPNS || 0; totalP3 += r.PPPK || 0; totalPro += r.PROFESIONAL || 0; totalJ += r.PJLP || 0; totalAll += r.total || 0;
           const unitText = escapeHtml(r.unit || '-');
           const noText = escapeHtml(r.no || idx + 1);
           tr.className = 'border-b border-slate-100';
@@ -866,7 +860,7 @@ document.body.classList.toggle('role-super', isSuper);
             <td class="px-3 py-2 text-center">${(r.CPNS||0).toLocaleString('id-ID')}</td>
             <td class="px-3 py-2 text-center">${(r.PPPK||0).toLocaleString('id-ID')}</td>
             <td class="px-3 py-2 text-center">${(r.PROFESIONAL||0).toLocaleString('id-ID')}</td>
-            <td class="px-3 py-2 text-center">${(r['PPPK Paruh Waktu']||0).toLocaleString('id-ID')}</td>
+            <td class="px-3 py-2 text-center">${(r.PJLP||0).toLocaleString('id-ID')}</td>
             <td class="px-3 py-2 text-center font-semibold">${(r.total||0).toLocaleString('id-ID')}</td>
           `;
         }
@@ -883,16 +877,7 @@ document.body.classList.toggle('role-super', isSuper);
       }
     }
 
-    if (chartModeSelect) {
-      chartModeSelect.addEventListener('change', ()=>{
-        chartMode = chartModeSelect.value === 'gender'
-          ? 'gender'
-          : (chartModeSelect.value === 'marital' ? 'marital' : 'status');
-        updateChartTitles(chartMode);
-        if (preparedCache) renderCharts(preparedCache);
-      });
-      updateChartTitles(chartMode);
-    }
+    updateChartTitles();
 
     function filterTable(){
       const q = (document.getElementById('tableFilter')?.value || '').toLowerCase();
@@ -912,6 +897,7 @@ document.body.classList.toggle('role-super', isSuper);
       }
       setTimeout(()=>{
         try{ charts.status?.resize(); }catch(e){}
+        try{ charts.wilayah?.resize(); }catch(e){}
         try{ charts.ukpd?.resize(); }catch(e){}
         try{ charts.rumpun?.resize(); }catch(e){}
         try{ charts.pendidikan?.resize(); }catch(e){}
