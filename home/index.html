@@ -275,7 +275,10 @@
     // FUNGSI TETAP SAMA AGAR TIDAK MERUSAK LOGIKA SISTEM ANDA
     const BASE = (() => {
       const parts = location.pathname.split('/').filter(Boolean);
-      return parts.length && parts[0].toUpperCase() === 'DATA_PEGAWAI' ? '/' + parts[0] + '/' : '/';
+      if (!parts.length) return '/';
+      if (parts[0].toUpperCase() === 'DATA_PEGAWAI') return '/' + parts[0] + '/';
+      if (location.hostname.endsWith('github.io')) return '/' + parts[0] + '/';
+      return '/';
     })();
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) favicon.href = BASE + 'foto/Dinkes.png';
