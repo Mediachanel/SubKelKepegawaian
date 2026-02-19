@@ -298,7 +298,7 @@
     })();
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) favicon.href = BASE + 'foto/Dinkes.png';
-    const API_BASE = localStorage.getItem('apiBase') || 'http://172.31.254.56:3000';
+    const API_BASE = localStorage.getItem('apiBase') || 'https://api.kepegawaian.media';
     const statusOrder = ['PNS','CPNS','PPPK','PROFESIONAL','PPPK Paruh Waktu'];
     const statusLabels = { PNS:'PNS', CPNS:'CPNS', PPPK:'PPPK', PROFESIONAL:'PROFESIONAL', 'PPPK Paruh Waktu':'PPPK Paruh Waktu' };
     const statusColors = { PNS:'#0EA5E9', CPNS:'#06B6D4', PPPK:'#22C55E', PROFESIONAL:'#14B8A6', 'PPPK Paruh Waktu':'#8B5CF6' };
